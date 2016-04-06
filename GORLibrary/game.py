@@ -63,14 +63,14 @@ class GOR:
 		self.nFood += 1
 
 	def run(self):
-		tStart = time()
+		fitness = 0.0
 		self.running = True
 		(x,y) = self.randomLocation()
 		teta = self.randomOrientaton()
 		self.robot.setAbsolutePosition(teta,x,y)
 		self.robot.reanimate()
 		while self.running:
-			
+			fitness += 0.001
 			# Do the display
 			if self.renderer:
 				self.env.clean()
@@ -84,6 +84,7 @@ class GOR:
 					rb.move(da,di)
 					for fd in self.env.getFoods():
 						if rb.eat(fd):
+							fitness += 2.0
 							# we could relocate food instead of removing + addnew
 							self.removeFood(fd)
 							self.addFood()
@@ -96,4 +97,4 @@ class GOR:
 			if self.renderer:
 				self.renderer.commit()
 
-		return time()-tStart
+		return fitness
