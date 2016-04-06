@@ -104,9 +104,9 @@ class rectangle(basePolygon):
 		dx = (self.sizex/2)
 		dy = -(self.sizey/2)		
 		self.cartPoints = [[ax,ay],[bx,by],[cx,cy],[dx,dy]]
-		print(self.cartPoints)
+		# print(self.cartPoints)
 		self.polarPoints = self.cartToPolar(self.cartPoints)
-		print(self.polarPoints)
+		# print(self.polarPoints)
 		# absolute
 		self.dispPoints = self.polarToDisp(self.polarPoints,self.orientation)
 		self.computeBBoxSize()

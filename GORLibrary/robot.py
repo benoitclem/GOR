@@ -82,8 +82,11 @@ class robot(object):
 		dist = sqrt((max(self.x,obj.x)-min(self.x,obj.x))**2 + (max(self.y,obj.y)-min(self.y,obj.y))**2)
 		if(dist<=(self.bboxSize+obj.bboxSize)):
 			if obj.eatable:
-				print("miam")
-				self.lifeValue += 100
+				self.lifeValue += 300
+				print("miam! life=" + str(self.lifeValue))
+				if (self.lifeValue > 10000):
+					print "Robot too efficient has been killed by jealous crowd"
+					self.lifeValue = 0
 			else:
 				print("beurk")
 			return obj.eatable

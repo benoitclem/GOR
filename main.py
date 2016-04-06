@@ -28,9 +28,9 @@ class nnPlayer(player):
 		((img1,img2),life) = inputs
 
 		for i in range(len(img1)):
-			angle = img1[i][0]
-			dist = img1[i][1]
-			col = img1[i][2]
+			angle = img1[len(img1)-1-i][0]
+			dist = img1[len(img1)-1-i][1]
+			col = img1[len(img1)-1-i][2]
 			if dist>maxLightDist:
 				dist = maxLightDist
 			dist = ((maxLightDist - dist)/maxLightDist)
