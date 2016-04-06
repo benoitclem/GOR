@@ -4,6 +4,8 @@ from time import time
 from GORLibrary import environnement
 from GORLibrary import robot
 
+tg = 0
+
 class GOR:
 	def __init__(self,szX,szY,margin,cb = None, renderer = None):
 
@@ -79,8 +81,15 @@ class GOR:
 			# Do the robot live
 			for rb in self.env.getRobots():
 				if self.playerCb:
+					global tg
 					life = self.robot.life()
-					(di,da,npl,run) = self.playerCb.play([rb.see(),life])
+					# t = time()
+					# dt = t - tg
+					imgs = rb.see()
+					# t2 = time()
+					# print(dt , t2 - t)
+					# tg = t2
+					(di,da,npl,run) = self.playerCb.play([imgs,life])
 					rb.move(da,di)
 					for fd in self.env.getFoods():
 						if rb.eat(fd):
