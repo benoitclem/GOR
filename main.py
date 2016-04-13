@@ -1,11 +1,14 @@
+#! /opt/local/bin/python2.7
 # -*- coding: utf-8 -*-
 
 import pickle
+import os
 from time import time
 from GORLibrary	import game as GORGame
 from GORLibrary import colors
 #from GORLibrary import display as GORDisplay
 from neat import nn, population, statistics, visualize, parallel
+import datetime
 
 maxLightDist = 1000
 
@@ -43,7 +46,7 @@ class nnPlayer(player):
 			flatInput.append((r/127.0)-1.0)
 			flatInput.append((g/127.0)-1.0)
 			flatInput.append((b/127.0)-1.0)
-
+			#print(color)
 			if self.renderer:
 				for j in range(20):
 					self.renderer.drawPixel(color,(k,j))
@@ -114,6 +117,29 @@ class humanPlayer(player):
 
 		return (self.di,self.da,nPl,run)
 
+def checkExistanceOrCreate(fileName):
+	if not os.path.exists(os.path.dirname(fileName)):
+	    try:
+	        os.makedirs(os.path.dirname(fileName))
+	    except OSError as exc: # Guard against race condition
+	        if exc.errno != errno.EEXIST:
+	            raise
+
+def recordGenomeIfNeeded(g,genIndex,iIndex):
+	global batchName
+	global recGenValue
+	if recGenValue:
+		if recGenValue > g.fitness:
+			now = datetime.datetime.now()
+			tmstp = now.strftime("%Y%m%d-%H%M")
+			fileName = './%s/%03d/%03d-%f-%s.data' %(batchName,genIndex,iIndex,g.fitness*10000,tmstp)
+			checkExistanceOrCreate(fileName)
+			print("Record to %s" %(fileName))
+			with open(fileName, 'wb') as f:
+				pickle.dump(g, f)
+		else:
+			print(g.fitness)
+
 def parallelEvalFitness(g):
 	game = GORGame.GOR(740,580,10,None,None)
 	game.addRobot(20,200)
@@ -123,16 +149,20 @@ def parallelEvalFitness(g):
 	g.fitness = game.run()
 	print(g.fitness)
 
-def evalFitness(gs):
+def evalFitness(gs,genIndex):
 	global game 
 	global renderer
+	indIndex = 0
 	for g in gs:
 		p = nnPlayer(g,renderer)
 		game.setPlayer(p)
 		g.fitness = game.run()
-		print(g.fitness)
+		recordGenomeIfNeeded(g,genIndex,indIndex)
+		indIndex += 1
 
 pop = None
+batchName = raw_input("BatchName? ")
+recGenValue = 10
 parallelExec = raw_input("Parallel Evaluation? (y/n) ")
 if parallelExec == 'y':
 	print("Go for Threading stuffs")
@@ -151,7 +181,8 @@ else:
 		renderer = GORDisplay.pygameRenderer()
 	game = GORGame.GOR(740,580,10,None,renderer)
 	game.addRobot(20,200)
-	game.addFood()
+	for i in range(1):
+		game.addFood()
 
 	pop = population.Population('GorNnConfig')
 	pop.run(evalFitness, 300)

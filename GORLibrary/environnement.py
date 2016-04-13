@@ -4,7 +4,7 @@ from colors import *
 from sensors import *
 from shapes import *
 from robot import robot
-
+import numpy as np
 # know the 
 
 class environnement:
@@ -32,6 +32,26 @@ class environnement:
 			for l in self.listOfObjects:
 				l.draw(self.renderer)
 
+	#@profile
+	def getSingleSegments(self):
+		singleSegments = []
+		#singleSegments = np.zeros(0)
+		for index,obj in enumerate(self.listOfObjects):
+			if isinstance(obj, basePolygon):
+				nPoints = len(obj.dispPoints)
+				#for i in range(nPoints):
+				singleSegments.extend([[obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[0][0],obj.dispPoints[0][1],obj.color] if (i  ==(nPoints-1)) else [obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[i+1][0],obj.dispPoints[i+1][1],obj.color] for i in range(nPoints)])
+				"""
+				if i == (nPoints-1):
+					singleSegments.append([obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[0][0],obj.dispPoints[0][1],obj.color])
+				else:
+					singleSegments.append([obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[i+1][0],obj.dispPoints[i+1][1],obj.color])
+				"""
+		#print(singleSegments
+		return singleSegments
+
+	"""
+	@profile
 	def getSingleSegments(self):
 		self.singleSegments = []
 		for obj in self.listOfObjects:
@@ -51,7 +71,7 @@ class environnement:
 					t = obj.color
 					self.singleSegments.append([p1,p2,p3,p4,t])
 		return self.singleSegments
-
+	"""
 
 	# Could make a unique
 	def getSensors(self):
@@ -108,6 +128,7 @@ class environnement:
 					else:
 						self.renderer.drawLine(RED,[eye.x, eye.y], point, 1)
 
+	#@profile
 	def intersectLines(self, pt1, pt2, ptA, ptB ): 
 	    """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
 	        

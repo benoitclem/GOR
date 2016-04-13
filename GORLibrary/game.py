@@ -83,17 +83,11 @@ class GOR:
 				if self.playerCb:
 					global tg
 					life = self.robot.life()
-					# t = time()
-					# dt = t - tg
 					imgs = rb.see()
-					# t2 = time()
-					# print(dt , t2 - t)
-					# tg = t2
 					(di,da,npl,run) = self.playerCb.play([imgs,life])
 					rb.move(da,di)
 					for fd in self.env.getFoods():
 						if rb.eat(fd):
-							fitness += 2.0
 							# we could relocate food instead of removing + addnew
 							self.removeFood(fd)
 							self.addFood()

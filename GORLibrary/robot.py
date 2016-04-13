@@ -91,8 +91,9 @@ class robot(object):
 				print("beurk")
 			return obj.eatable
 
+	#@profile
 	def see(self):
-		img1 = self.eyeR.see()
+		img1 = self.eyeR.see2()
 		img2 = self.eyeL.see()
 		return (img1,img2)
 

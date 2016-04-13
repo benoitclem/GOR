@@ -8,6 +8,8 @@ from math import pi
 from math import atan
 from math import atan2
 
+import numpy as np
+
 class organ(object):
 	def __init__(self, environnement, angle, orientation, x, y):
 		object.__init__(self)
@@ -122,20 +124,95 @@ class eye(organ):
 	def __init__(self, environnement, angle, orientation, x, y, resolution):
 		organ.__init__(self, environnement, angle, orientation, x, y)
 		self.resolution = resolution # points par degrés
-	
+		self.angleList = np.linspace(-self.angle,self.angle,self.angle*self.resolution)
+		self.nRays = len(self.angleList)
+
 	def getColor(self):
 		return GREEN
 
 	def do(self):
 		self.see()
 
+	
+	#@profile
+	def see2(self):
+		visionBuffer = [[0,8000,(0,0,0)]] * self.nRays
+		segments = self.environnement.getSingleSegments()
+		#print("=======")
+		for i,curDeg in enumerate(self.angleList):
+		#while curDeg <= self.angle/2.0:
+			for j,segment in enumerate(segments):
+				# segment
+				ax = float(segment[0])
+				ay = float(segment[1])
+				bx = float(segment[2])
+				by = float(segment[3])
+				color = segment[4]
+
+				angle = (self.orientation+curDeg)*(pi/180.0)
+				cx = float(self.x)
+				cy = float(self.y)
+				dx = float(self.x + (cos(angle) * 1000.0))
+				dy = float(self.y - (sin(angle) * 1000.0))
+
+				dxl1 = bx - ax
+				dyl1 = by - ay
+
+				dxl2 = dx - cx
+				dyl2 = dy - cy
+
+				#pygame.draw.line(screen, GREEN, [int(cx), int(cy)], [int(dx),int(dy)], 1)
+				p = self.environnement.intersectLines((ax,ay),(bx,by),(cx,cy),(dx,dy))
+				if p != None:
+					if p[2] != 0:
+						x = int(p[0])
+						y = int(p[1])
+						r = p[3]
+						s = p[4]
+
+						if (r<=1.0) and (r>=0.0) and (s<=1.0) and (s>=0):
+							a1 = atan2(dyl1,dxl1) * (180.0 / pi)
+							a2 = atan2(dyl2,dxl2) * (180.0 / pi)
+							#print("before",a1,a2)
+							if a1 > 90.0:
+								a1 -= 180.0
+							elif a1 < -90.0: 
+								a1 += 180.0
+							
+							if a2 > 90.0:
+								a2 -= 180.0
+							elif a2 < -90.0: 
+								a2 += 180.0
+							#print("after",a1,a2)
+							maxA = max(a1,a2)
+							minA = min(a1,a2)
+							teta = (maxA - minA)
+							#print("angle",teta)
+							if teta > 90.0:
+								teta -= 2*(teta-90.0)
+							#print("angle",teta)
+							#compute distance
+							angle = (teta/90.0) * 255.0
+
+							# See if this intersection is near that the 
+							dist = sqrt((x-self.x)*(x-self.x) + (y-self.y)*(y-self.y))
+							if dist<visionBuffer[i][2]:
+								#nearestIntersection = (x,y,dist,angle,teta,a1,a2,color)
+								visionBuffer[i] = [teta,dist,color]
+							#pygame.draw.circle(screen,BLUE,(x,y),10)
+
+		return visionBuffer
+
+	#@profile
 	def see(self):
 		visionBuffer = []
+		#visionBuffer = [[0,0,0]] * self.nRays
 		segments = self.environnement.getSingleSegments()
 		dDeg = 1.0/self.resolution
 		curDeg = -self.angle/2.0
 		#print("=======")
-		while curDeg <= self.angle/2.0:
+		for i,curDeg in enumerate(self.angleList):
+		#while curDeg <= self.angle/2.0:
 			intersections = []
 			for segment in segments:
 				# segment
@@ -211,39 +288,7 @@ class eye(organ):
 			#pygame.draw.circle(screen,BLUE,(nx,ny),2)
 			visionBuffer.append([nTeta,nDist,color])
 			#print(na1,na2,nTeta)
-			curDeg += dDeg
 		return visionBuffer
-
-		"""
-		for segment in segments:
-			#print("----",segment)
-
-			# segment
-			ax = float(segment[0])
-			ay = float(segment[1])
-			bx = float(segment[2])
-			by = float(segment[3])
-
-			# cast the upper border
-			angle = (self.orientation+self.angle/2.0)*(pi/180.0)
-			cx = float(self.x)
-			cy = float(self.y)
-			dx = float(self.x + (cos(angle) * 1000.0))
-			dy = float(self.y - (sin(angle) * 1000.0))
-
-			pygame.draw.line(screen, GREEN, [int(cx), int(cy)], [int(dx),int(dy)], 1)
-			p = self.environnement.intersectLines((ax,ay),(bx,by),(cx,cy),(dx,dy))
-			if p != None:
-				if p[2] != 0:
-					x = int(p[0])
-					y = int(p[1])
-					r = p[3]
-					s = p[4]
-					print(p)
-					#print(r,s)
-					if (r<=1.0) and (r>=0.0) and (s<=1.0) and (s>=0):
-						pygame.draw.circle(screen,BLUE,(x,y),10)
-		"""
 
 class mouth(organ):
 	def __init__(self, environnement, angle, orientation, x, y):
