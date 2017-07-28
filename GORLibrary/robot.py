@@ -18,7 +18,8 @@ class robot(object):
 		self.size = size
 		self.x = x
 		self.y = y
-		self.lifeValue = life
+		self.defaultLife = life
+		self.lifeValue = self.defaultLife
 		self.orientation = orientation
 		self.bboxSize = int((sqrt(2)*self.size)/2)
 		self.eyeAOW = 45.0
@@ -48,11 +49,21 @@ class robot(object):
 
 		self.body = square(self.x,self.y,size,self.orientation,RED)
 
-	def reanimate(self,life = 200.0):
-		self.lifeValue = life
+		self.diFactor = 3
+		self.daFactor = 6
+
+	def reanimate(self):
+		self.lifeValue = self.defaultLife
 
 	def getEyeParameters(self):
 		return (self.eyeAOW,self.eyeRes)
+
+
+	def setDeltaDistance(self,dd):
+		self.diFactor = dd
+
+	def setDeltaAngle(self,da):
+		self.daFactor = da
 
 	def life(self):
 		return self.lifeValue
@@ -77,7 +88,7 @@ class robot(object):
 			# sensors
 			for sens in self.mySensors:
 				sens.draw(renderer)
-	
+
 	def eat(self,obj):
 		dist = sqrt((max(self.x,obj.x)-min(self.x,obj.x))**2 + (max(self.y,obj.y)-min(self.y,obj.y))**2)
 		if(dist<=(self.bboxSize+obj.bboxSize)):
@@ -94,12 +105,14 @@ class robot(object):
 	#@profile
 	def see(self):
 		img1 = self.eyeR.see2()
-		img2 = self.eyeL.see()
+		#img2 = self.eyeL.see()
+		#img1 = None
+		img2 = None
 		return (img1,img2)
 
 	def move(self, dangle, distance):
-		dx = cos((dangle+self.orientation)*(pi/180.0)) * distance
-		dy = -sin((dangle+self.orientation)*(pi/180.0)) * distance
+		dx = cos(((dangle * self.daFactor)+self.orientation)*(pi/180.0)) * distance * self.diFactor
+		dy = -sin(((dangle * self.daFactor)+self.orientation)*(pi/180.0)) * distance * self.diFactor
 		#print(((0.05*distance) + (0.025*dangle)))
 		self.lifeValue -= ((0.05*abs(distance) + (0.025*abs(dangle))))
 		self.setPosition(dangle,dx,dy)

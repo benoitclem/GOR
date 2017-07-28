@@ -1,6 +1,6 @@
 
 from random import random
-from time import time
+from time import time, sleep
 from GORLibrary import environnement
 from GORLibrary import robot
 
@@ -85,6 +85,8 @@ class GOR:
 					life = self.robot.life()
 					imgs = rb.see()
 					(di,da,npl,run) = self.playerCb.play([imgs,life])
+
+					self.running = run
 					rb.move(da,di)
 					for fd in self.env.getFoods():
 						if rb.eat(fd):
@@ -93,11 +95,14 @@ class GOR:
 							self.addFood()
 				# Make the robot live
 				self.robot.live()
+				# Check if robot still alive
 				if self.robot.isNotAlive():
 					self.running = False
-			
+
 			# Commit display
 			if self.renderer:
+				#print("commiting")
+				self.renderer.drawFps((0,254,254),(self.screenW-50,10))
 				self.renderer.commit()
 
 		return fitness

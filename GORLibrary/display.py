@@ -41,11 +41,14 @@ class display:
 class pygameRenderer(display):
 
 	def init(self,screenSize):
+
+		self.lastDi = 0
+		self.lastDa = 0
+
 		self.screenSize = screenSize
-		# Scene Init 
+		# Scene Init
 		pygame.init()
-		fpsClock = pygame.time.Clock()
-		fpsClock.tick(20)
+		self.fpsClock = pygame.time.Clock()
 		self.screen = pygame.display.set_mode(self.screenSize)
 
 		self.font = pygame.font.SysFont("monospace", 15)
@@ -77,9 +80,13 @@ class pygameRenderer(display):
 	def drawText(self,COLOR,p,text):
 		self.screen.blit(self.font.render(text, 1, COLOR), p)
 
+	def drawFps(self,COLOR,p):
+		self.fpsClock.tick()
+		self.drawText(COLOR,p,"%.1f fps"%(self.fpsClock.get_fps()))
+
 	def getKeyboardInput(self):
-		da = 0
-		di = 0
+		da = self.lastDa
+		di = self.lastDi
 		run = True # event to quit app
 		exe = True # event to block exec
 		nPl = False # event to add new player
@@ -109,7 +116,12 @@ class pygameRenderer(display):
 					da = 0.0
 				elif (event.key == pygame.K_q) or (event.key == pygame.K_LEFT):
 					da = 0.0
+				elif (event.key == pygame.K_n):
+					nPl = False
+
 			if event.type == QUIT:
 				run = False
 
-		return (di,da,run,exe,pl)
+		self.lastDa = da
+		self.lastDi = di
+		return (di,da,run,exe,nPl)

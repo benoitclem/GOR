@@ -2,7 +2,7 @@
 
 import sys
 import pickle
-from neat import nn, population, statistics, visualize, parallel
+from neat import nn, population, statistics, parallel
 
 if len(sys.argv) >= 2:
 	fName = sys.argv[1]

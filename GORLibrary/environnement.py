@@ -5,7 +5,7 @@ from sensors import *
 from shapes import *
 from robot import robot
 import numpy as np
-# know the 
+# know the
 
 class environnement:
 	def __init__(self, eSz, margin = 10, renderer = None):
@@ -25,7 +25,7 @@ class environnement:
 
 	def clean(self):
 		if self.renderer:
-			self.renderer.clean()	
+			self.renderer.clean()
 
 	def draw(self):
 		if self.renderer:
@@ -40,7 +40,9 @@ class environnement:
 			if isinstance(obj, basePolygon):
 				nPoints = len(obj.dispPoints)
 				#for i in range(nPoints):
+
 				singleSegments.extend([[obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[0][0],obj.dispPoints[0][1],obj.color] if (i  ==(nPoints-1)) else [obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[i+1][0],obj.dispPoints[i+1][1],obj.color] for i in range(nPoints)])
+
 				"""
 				if i == (nPoints-1):
 					singleSegments.append([obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[0][0],obj.dispPoints[0][1],obj.color])
@@ -115,7 +117,7 @@ class environnement:
 			if isinstance(obj, robot):
 				l.append(obj)
 		return l
-		
+
 	def getObjects(self):
 		return self.listOfObjects
 
@@ -129,9 +131,9 @@ class environnement:
 						self.renderer.drawLine(RED,[eye.x, eye.y], point, 1)
 
 	#@profile
-	def intersectLines(self, pt1, pt2, ptA, ptB ): 
+	def intersectLines(self, pt1, pt2, ptA, ptB ):
 	    """ this returns the intersection of Line(pt1,pt2) and Line(ptA,ptB)
-	        
+
 	        returns a tuple: (xi, yi, valid, r, s), where
 	        (xi, yi) is the intersection
 	        r is the scalar multiple such that (xi,yi) = pt1 + r*(pt2-pt1)
@@ -192,4 +194,3 @@ class food(square):
 		square.__init__(self, x, y, 10.0, 0.0, BLUE)
 		self.activateBBox()
 		self.eatable = True
-		
