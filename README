@@ -1,0 +1,11 @@
+
+GOR
+
+base:
+uses numpy (1.12.0)         - pip install
+uses neat-python (>0.9)     - https://github.com/CodeReclaimers/neat-python (0.92)
+                            - pip install neat-python (0.9)
+uses pygame (1.9.3)         - pip install pygame
+
+graphic viz:
+graphviz (0.5.2)            - pip install graphviz
