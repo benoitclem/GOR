@@ -7,7 +7,7 @@ from math import cos
 from math import pi
 from math import atan
 from math import atan2
-
+from time import time
 import numpy as np
 
 class organ(object):
@@ -107,7 +107,7 @@ class organ(object):
 				secondUpperBound =  180
 				bounds.append([secondUpperBound,secondLowerBound])
 			bounds.append([upperBound,lowerBound])
-			
+
 		visible = False
 
 		#print('======')
@@ -133,9 +133,13 @@ class eye(organ):
 	def do(self):
 		self.see()
 
-	
+	# ALL
+	# 0.0017966909408569337 - 0.000198841512151069
+	# 1.6ms
+	# 0.0017966909408569337 - 0.0009033533949030144
 	#@profile
 	def see2(self):
+		#t0 = time()
 		visionBuffer = [[0,8000,(0,0,0)]] * self.nRays
 		segments = self.environnement.getSingleSegments()
 		#print("=======")
@@ -162,7 +166,9 @@ class eye(organ):
 				dyl2 = dy - cy
 
 				#pygame.draw.line(screen, GREEN, [int(cx), int(cy)], [int(dx),int(dy)], 1)
+
 				p = self.environnement.intersectLines((ax,ay),(bx,by),(cx,cy),(dx,dy))
+				"""
 				if p != None:
 					if p[2] != 0:
 						x = int(p[0])
@@ -176,12 +182,12 @@ class eye(organ):
 							#print("before",a1,a2)
 							if a1 > 90.0:
 								a1 -= 180.0
-							elif a1 < -90.0: 
+							elif a1 < -90.0:
 								a1 += 180.0
-							
+
 							if a2 > 90.0:
 								a2 -= 180.0
-							elif a2 < -90.0: 
+							elif a2 < -90.0:
 								a2 += 180.0
 							#print("after",a1,a2)
 							maxA = max(a1,a2)
@@ -194,13 +200,14 @@ class eye(organ):
 							#compute distance
 							angle = (teta/90.0) * 255.0
 
-							# See if this intersection is near that the 
+							# See if this intersection is near that the
 							dist = sqrt((x-self.x)*(x-self.x) + (y-self.y)*(y-self.y))
 							if dist<visionBuffer[i][2]:
 								#nearestIntersection = (x,y,dist,angle,teta,a1,a2,color)
 								visionBuffer[i] = [teta,dist,color]
 							#pygame.draw.circle(screen,BLUE,(x,y),10)
-
+				"""
+		#print(time()-t0) # It takes about 2ms for 1 pix/deg
 		return visionBuffer
 
 	#@profile
@@ -249,12 +256,12 @@ class eye(organ):
 							#print("before",a1,a2)
 							if a1 > 90.0:
 								a1 -= 180.0
-							elif a1 < -90.0: 
+							elif a1 < -90.0:
 								a1 += 180.0
-							
+
 							if a2 > 90.0:
 								a2 -= 180.0
-							elif a2 < -90.0: 
+							elif a2 < -90.0:
 								a2 += 180.0
 							#print("after",a1,a2)
 							maxA = max(a1,a2)
@@ -265,7 +272,7 @@ class eye(organ):
 								teta -= 2*(teta-90.0)
 							#print("angle",teta)
 							#compute distance
-							angle = (teta/90.0) * 255.0 
+							angle = (teta/90.0) * 255.0
 							intersections.append((x,y,angle,teta,a1,a2,color))
 							#pygame.draw.circle(screen,BLUE,(x,y),10)
 
@@ -327,5 +334,3 @@ class ear(organ):
 			else:
 				pygame.draw.line(screen, RED, [int(mouth.x), int(mouth.y)], [int(self.x),int(self.y)], 1)
 		return sound
-
-

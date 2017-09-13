@@ -29,10 +29,13 @@ class nnPlayer(player):
 	def play(self,inputs):
 		## this is the what the robot sees ear
 
+		run = True
+
 		k = 0
 		flatInput = []
 		((img1,img2),life) = inputs
 
+		# Just Display what the robot sees
 		if img1:
 			for i in range(len(img1)):
 				angle = img1[len(img1)-1-i][0]
@@ -58,8 +61,7 @@ class nnPlayer(player):
 
 		if self.renderer:
 			self.renderer.drawText((0,254,254),( k + 10 , 10),"%f"%(life))
-
-		(di,da,run,exe,nPl) = self.renderer.getKeyboardInput()
+			(di,da,run,exe,nPl) = self.renderer.getKeyboardInput()
 
 		output = self.net.activate(flatInput)
 		#print(output)

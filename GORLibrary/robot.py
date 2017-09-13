@@ -23,7 +23,7 @@ class robot(object):
 		self.orientation = orientation
 		self.bboxSize = int((sqrt(2)*self.size)/2)
 		self.eyeAOW = 45.0
-		self.eyeRes = 0.5
+		self.eyeRes = 1		# number of pixels per deg / you would like to change num_inputs in GorNnConfig
 
 		# Create sensors with dummy position (center of robot)
 		self.eyeR = eye(self.environnement,self.eyeAOW,self.orientation,self.x,self.y,self.eyeRes)

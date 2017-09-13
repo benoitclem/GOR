@@ -4,8 +4,6 @@ from time import time, sleep
 from GORLibrary import environnement
 from GORLibrary import robot
 
-tg = 0
-
 class GOR:
 	def __init__(self,szX,szY,margin,cb = None, renderer = None):
 
@@ -65,6 +63,8 @@ class GOR:
 		self.nFood += 1
 
 	def run(self):
+		tStart = time()
+		lifeRounds = 0
 		fitness = 0.0
 		self.running = True
 		(x,y) = self.randomLocation()
@@ -81,9 +81,9 @@ class GOR:
 			# Do the robot live
 			for rb in self.env.getRobots():
 				if self.playerCb:
-					global tg
 					life = self.robot.life()
 					imgs = rb.see()
+					lifeRounds += 1
 					(di,da,npl,run) = self.playerCb.play([imgs,life])
 
 					self.running = run
@@ -104,5 +104,6 @@ class GOR:
 				#print("commiting")
 				self.renderer.drawFps((0,254,254),(self.screenW-50,10))
 				self.renderer.commit()
-
+		tDelta = time() - tStart
+		print("efficiency", tDelta/lifeRounds)
 		return fitness

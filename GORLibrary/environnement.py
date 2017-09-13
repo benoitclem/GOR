@@ -32,7 +32,8 @@ class environnement:
 			for l in self.listOfObjects:
 				l.draw(self.renderer)
 
-	#@profile
+	# TODO: Here we could cache the singleSegments avoiding the cost of
+	# recomputation, We should flag a change and compute is changed
 	def getSingleSegments(self):
 		singleSegments = []
 		#singleSegments = np.zeros(0)
@@ -41,7 +42,7 @@ class environnement:
 				nPoints = len(obj.dispPoints)
 				#for i in range(nPoints):
 
-				singleSegments.extend([[obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[0][0],obj.dispPoints[0][1],obj.color] if (i  ==(nPoints-1)) else [obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[i+1][0],obj.dispPoints[i+1][1],obj.color] for i in range(nPoints)])
+				singleSegments.extend([[obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[0][0],obj.dispPoints[0][1],obj.color] if (i  == (nPoints-1)) else [obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[i+1][0],obj.dispPoints[i+1][1],obj.color] for i in range(nPoints)])
 
 				"""
 				if i == (nPoints-1):
@@ -49,7 +50,6 @@ class environnement:
 				else:
 					singleSegments.append([obj.dispPoints[i][0],obj.dispPoints[i][1],obj.dispPoints[i+1][0],obj.dispPoints[i+1][1],obj.color])
 				"""
-		#print(singleSegments
 		return singleSegments
 
 	"""
